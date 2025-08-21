@@ -46,4 +46,11 @@ jobs:
             docker run --rm -v "$project_dir":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
             folder_name=$(basename $(dirname "$workspace"))
             echo "Generating static site for $folder_name ..."
+            mkdir -p build/$folder_name
+            docker run --rm \
+              -v "$GITHUB_WORKSPACE":/workspace \
+              structurizr/cli:latest export \
+              -workspace /workspace/$folder_name/workspace.dsl \
+              -format static \
+              -output /workspace/build/$folder_name
           done
