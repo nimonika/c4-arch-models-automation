@@ -28,7 +28,7 @@ jobs:
           docker run --rm structurizr/cli:latest version
       - name: List repo contents
         run: ls -R $GITHUB_WORKSPACE
-      - name: Validate all projects
+      - name: Validate all projects and generate site
         run: |
           echo "🔎 Validating all .dsl files in repository..."
           echo "Searching for all workspace.dsl files..."
@@ -45,5 +45,5 @@ jobs:
             echo "Validating DSL in $project_dir ..."
             docker run --rm -v "$project_dir":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
             folder_name=basename "$workspace"
-            echo "Generating static site for $folder_name..."
+            echo "Generating static site for $folder_name ..."
           done
