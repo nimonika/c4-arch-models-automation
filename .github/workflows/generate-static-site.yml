@@ -41,16 +41,27 @@ jobs:
           fi
           mkdir -p build
           for workspace in $workspace_files; do
-            project_dir=$(dirname "$workspace")  
+            project_dir=$(dirname "$workspace") 
+            folder_name=$(basename $(dirname "$workspace"))
+
             echo "Validating DSL in $project_dir ..."
             docker run --rm -v "$project_dir":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
-            folder_name=$(basename $(dirname "$workspace"))
+         
             echo "Generating static site for $folder_name ..."
             mkdir -p build/$folder_name
             docker run --rm \
-              -v "$GITHUB_WORKSPACE":/workspace \
-              structurizr/cli:latest export \
-              -workspace /workspace/$folder_name/workspace.dsl \
-              -format static \
-              -output /workspace/build/$folder_name
+                -v "$project_dir":/workspace \
+                -v "$GITHUB_WORKSPACE/build/$folder_name":/output \
+                structurizr/cli:latest export \
+                -workspace /workspace/workspace.dsl \
+                -format static-html \
+                -output /output
           done
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          publish_branch: gh-pages
+          force_orphan: true
+  
