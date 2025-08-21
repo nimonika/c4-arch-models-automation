@@ -1,0 +1,19 @@
+name: Validate Structurizr DSL
+
+on:
+  push:
+    paths:
+      - '**/*.dsl'
+
+jobs:
+  validate-dsl:
+    runs-on: ubuntu-latest
+    container:
+      image: structurizr/cli:latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Validate Structurizr DSL
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/workspace" structurizr/cli validate -workspace /workspace/**/*.dsl
