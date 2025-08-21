@@ -1,0 +1,19 @@
+name: Check Docker on Runner
+
+on:
+  workflow_dispatch:   # manual trigger
+
+jobs:
+  check-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Docker version
+        run: |
+          if command -v docker &> /dev/null; then
+            echo "✅ Docker is installed"
+            docker --version
+            docker info | head -n 10
+          else
+            echo "❌ Docker is NOT installed"
+          fi
