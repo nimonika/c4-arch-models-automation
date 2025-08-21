@@ -20,5 +20,6 @@ jobs:
         run: |
           for file in *.dsl; do
             echo "Validating $file"
+            docker pull structurizr/cli
             docker run --rm -v "$(pwd):/workspace" structurizr/cli validate -workspace /workspace/"$file"
           done
