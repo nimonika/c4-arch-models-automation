@@ -36,5 +36,25 @@ jobs:
           for project in systemA; do
             echo "Validating $project at $GITHUB_WORKSPACE..."
             project_path="$GITHUB_WORKSPACE/$project"
+            echo "Project path is $project_path"
+            if [ ! -d "$project_path" ]; then
+              echo "❌ Project directory $project_path does not exist."
+              exit 1
+            fi
+            if [ ! -f "$project_path/workspace.dsl" ]; then
+              echo "❌ workspace.dsl file does not exist in $project_path."
+              exit 1
+            fi
+            echo "Validating $project_path/workspace.dsl..."
+            # Run Structurizr CLI validate command
+            # using the mounted workspace directory
+            echo "Running Structurizr CLI validate command..."
+            # Ensure the workspace.dsl file exists
+            if [ ! -f "$project_path/workspace.dsl" ]; then
+              echo "❌ workspace.dsl file does not exist in $project_path."
+              exit 1
+            fi
+            # Run the validation command
+            echo "Running Structurizr CLI validate command on $project_path/workspace.dsl..."
             docker run --rm -v "$project_path":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
           done
