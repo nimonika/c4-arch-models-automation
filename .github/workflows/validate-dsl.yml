@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "🔎 Validating all .dsl files in repository..."
           for project in systemA; do
-            echo "Validating $project at $(pwd)..."
-            project_path="$(pwd)/$project"
+            echo "Validating $project at $GITHUB_WORKSPACE..."
+            project_path="$GITHUB_WORKSPACE/$project"
             docker run --rm -v "$project_path":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
           done
