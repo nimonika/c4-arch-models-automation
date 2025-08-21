@@ -3,19 +3,22 @@ name: Validate Structurizr DSL
 on:
   push:
     paths:
-      - '**/*.dsl'
+      - '*.dsl'
 
 jobs:
   validate-dsl:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - name: Check Docker version
-        run: |
-          docker --version
-          docker info
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Validate Structurizr DSL
-        run: structurizr validate -workspace /workspace/**/*.dsl
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Validate Structurizr DSL files
+        run: |
+          for file in *.dsl; do
+            echo "Validating $file"
+            docker run --rm -v "$(pwd):/workspace" structurizr/cli validate -workspace /workspace/"$file"
+          done
