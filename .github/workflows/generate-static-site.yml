@@ -44,6 +44,6 @@ jobs:
             project_dir=$(dirname "$workspace")  
             echo "Validating DSL in $project_dir ..."
             docker run --rm -v "$project_dir":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
-            folder_name=basename "$workspace"
+            folder_name=$(basename $(dirname "$workspace"))
             echo "Generating static site for $folder_name ..."
           done
