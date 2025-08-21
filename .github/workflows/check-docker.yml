@@ -1,19 +1,32 @@
-name: Check Docker on Runner
+name: Check Docker + Structurizr CLI
 
 on:
-  workflow_dispatch:   # manual trigger
+  push:
+    branches: [ "main" ]   # you can change this to any branch
+  pull_request:
 
 jobs:
-  check-docker:
+  check-docker-structurizr:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Docker version
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check Docker availability
         run: |
           if command -v docker &> /dev/null; then
             echo "✅ Docker is installed"
             docker --version
-            docker info | head -n 10
           else
             echo "❌ Docker is NOT installed"
+            exit 1
           fi
+
+      - name: Test Structurizr CLI image
+        run: |
+          echo "Pulling Structurizr CLI image..."
+          docker pull structurizr/cli:latest
+          
+          echo "Running Structurizr CLI help command..."
+          docker run --rm structurizr/cli:latest --help
