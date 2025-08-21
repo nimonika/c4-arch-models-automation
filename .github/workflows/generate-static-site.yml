@@ -54,7 +54,7 @@ jobs:
                 -v "$GITHUB_WORKSPACE/build/$folder_name":/output \
                 structurizr/cli:latest export \
                 -workspace /workspace/workspace.dsl \
-                -format static-html \
+                -format static \
                 -output /output
           done
       - name: Check generated static site
