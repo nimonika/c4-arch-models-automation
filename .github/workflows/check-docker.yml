@@ -28,5 +28,12 @@ jobs:
           echo "Pulling Structurizr CLI image..."
           docker pull structurizr/cli:latest
           
-          echo "Running Structurizr CLI help command..."
+          echo "Running Structurizr CLI version command..."
           docker run --rm structurizr/cli:latest version
+      - name: Validate all DSL files
+        run: |
+          echo "🔎 Validating all .dsl files in repository..."
+          for file in $(find . -name "*.dsl"); do
+            echo "Validating $file ..."
+            docker run --rm -v $PWD:/workspace structurizr/cli:latest validate -workspace /workspace/$file
+          done
