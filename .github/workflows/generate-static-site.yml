@@ -1,0 +1,50 @@
+name: Validate structurizr files
+on:
+  push:
+    branches: [ "main" ]   # you can change this to any branch
+  pull_request:
+
+jobs:
+  check-docker-structurizr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Check Docker availability
+        run: |
+          if command -v docker &> /dev/null; then
+            echo "✅ Docker is installed"
+            docker --version
+          else
+            echo "❌ Docker is NOT installed"
+            exit 1
+          fi
+      - name: Test Structurizr CLI image
+        run: |
+          echo "Pulling Structurizr CLI image..."
+          docker pull structurizr/cli:latest
+          
+          echo "Running Structurizr CLI version command..."
+          docker run --rm structurizr/cli:latest version
+      - name: List repo contents
+        run: ls -R $GITHUB_WORKSPACE
+      - name: Validate all projects
+        run: |
+          echo "🔎 Validating all .dsl files in repository..."
+          echo "Searching for all workspace.dsl files..."
+          # Find all workspace.dsl files in the repository
+          workspace_files=$(find $GITHUB_WORKSPACE -type f -name "workspace.dsl")
+          
+          if [ -z "$workspace_files" ]; then
+            echo "No workspace.dsl files found. Exiting."
+            exit 1
+          fi
+          for workspace in $workspace_files; do
+            project_dir=$(dirname "$workspace")  
+            echo "Validating DSL in $project_dir ..."
+            docker run --rm -v "$project_dir":/workspace structurizr/cli:latest validate -workspace /workspace/workspace.dsl
+            mkdir -p build
+            echo "Generating static site for $workspace..."
+            mkdir -p build/$workspace
+          done
