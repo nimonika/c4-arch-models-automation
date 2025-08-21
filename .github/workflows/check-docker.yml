@@ -29,4 +29,4 @@ jobs:
           docker pull structurizr/cli:latest
           
           echo "Running Structurizr CLI help command..."
-          docker run --rm structurizr/cli:latest --help
+          docker run --rm structurizr/cli:latest version
