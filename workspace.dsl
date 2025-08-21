@@ -4,7 +4,7 @@ workspace "Name" "Description" {
 
     model {
         u = person "User"
-        ss = softwareSystem "Software System" {
+        ss = softwareSystem "Software System Under Test" {
             wa = container "Web Application"
             db = container "Database Schema" {
                 tags "Database"
