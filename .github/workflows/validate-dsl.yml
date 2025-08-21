@@ -8,12 +8,14 @@ on:
 jobs:
   validate-dsl:
     runs-on: ubuntu-latest
-    container:
-      image: structurizr/cli:latest
+    
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Check Docker version
+        run: |
+          docker --version
+          docker info
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Validate Structurizr DSL
-        run: |
-          docker run --rm -v "${{ github.workspace }}:/workspace" structurizr/cli validate -workspace /workspace/**/*.dsl
+        run: structurizr validate -workspace /workspace/**/*.dsl
