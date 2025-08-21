@@ -7,21 +7,21 @@ on:
   pull_request:
     paths:
       - "**.dsl"
-  workflow_dispatch:
-    inputs:
-      check_docker:
-        description: "Check if Docker is installed and print version"
-        required: false
-        default: "false"
 jobs:
   validate-dsl:
     runs-on: ubuntu-latest
-
     steps:
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
-
+      - name: Check Docker availability
+        id: docker-check
+        run: |
+          if command -v docker &> /dev/null; then
+            echo "docker=true" >> $GITHUB_OUTPUT
+          else
+            echo "docker=false" >> $GITHUB_OUTPUT
+          fi
       # Find and validate all DSL files
       - name: Validate Structurizr DSL files
         run: |
