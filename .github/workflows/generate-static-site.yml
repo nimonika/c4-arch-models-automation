@@ -1,4 +1,4 @@
-name: Validate structurizr files
+name: generate static pages
 on:
   push:
     branches: [ "main" ]   # you can change this to any branch
