@@ -4,6 +4,11 @@ on:
     branches: [ "main" ]   # you can change this to any branch
   pull_request:
 
+permissions:
+  contents: write   # ✅ needed to push to gh-pages
+  pages: write      # ✅ needed for GitHub Pages deployment
+  id-token: write  
+
 jobs:
   generate-static-files-structurizr:
     runs-on: ubuntu-latest
@@ -62,4 +67,12 @@ jobs:
           folder_name=$(basename "$project_dir")
           echo "Contents of build/$folder_name:"
           ls -R "$GITHUB_WORKSPACE/build/$folder_name"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.9.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          publish_branch: gh-pages
+          force_orphan: true
+      
     
